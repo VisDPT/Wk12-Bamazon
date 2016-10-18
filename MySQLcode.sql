@@ -1,0 +1,22 @@
+-- Creating Database
+/*CREATE Bamazon; */
+
+/*USE Bamazon;
+
+-- Creating Table
+CREATE TABLE Products (
+ItemID INTEGER(11) AUTO_INCREMENT NOT NULL,
+ProductName VARCHAR (100) NOT NULL,
+DepartmentName VARCHAR (100) NOT NULL,
+Price DECIMAL(8,2),
+StockQuantity INTEGER(100),
+PRIMARY KEY (ItemID)
+);
+*/
+
+-- Inserting Products into the Table
+/*
+INSERT INTO Products (ProductName, DepartmentName, Price, StockQuantity)
+VALUES ("Iphone 6", "Technology", 600.00, 1),  ("headphones", "Technology", 20.00, 2), ("Ipad", "Technology", 200.00, 3), ("Chi Hair straightener", "Beauty", 80.00, 4), ("Lipstick", "Beauty", 8.00, 5), ("Chi curling iron", "Beauty", 75.00, 6),("Macbook", "Technology", 1999.00, 7), ("Hair clip set", "Beauty", 10.00, 8), ("3 inch Super Binder", "Stationary", 10.00, 9), ("50 set colorful gel pens", "Stationary", 10.00, 9);
+
+SELECT * FROM Bamazon.Products; */
