@@ -17,8 +17,8 @@ var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
     user: "newuser", //Your username
-    password: "password", //Your password
-    database: "Bamazon"
+    password: "***", //Your password
+    database: "***"
 })
 
 connection.connect(function(err) {
@@ -83,6 +83,19 @@ var productSearch = function() {
                     default:
                         console.log("Great! We have that amount!");
                         res[i].StockQuantity -= userQuantity;
+
+
+                        //UPDATE `Bamazon`.`Products` SET `StockQuantity`=res[i].StockQuantity WHERE `ProductName`='res[i].ProductName';
+
+
+    connection.query('SELECT * FROM Products', function(err, res) {
+        for (var i = 0; i < res.length; i++) {
+            console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + "$" + res[i].Price + " | ");
+        }
+        console.log("============================");
+        productSearch();
+    })
+}
                         console.log("Updated Stock Quantity:" + res[i].StockQuantity);
                 }
             }
