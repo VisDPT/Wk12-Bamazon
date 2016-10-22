@@ -16,9 +16,9 @@ var logo =
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-    user: "newuser", //Your username
-    password: "***", //Your password
-    database: "***"
+    user: "****", //Your username
+    password: "****", //Your password
+    database: "Bamazon"
 })
 
 connection.connect(function(err) {
@@ -29,6 +29,7 @@ connection.connect(function(err) {
 })
 
 console.log(logo);
+
 function displayItems() {
     connection.query('SELECT * FROM Products', function(err, res) {
         for (var i = 0; i < res.length; i++) {
@@ -38,6 +39,7 @@ function displayItems() {
         productSearch();
     })
 }
+//connection.query("UPDATE products SET ? WHERE ?", [{quantity: 100}, {flavor: "Rocky Road"}], function(err, res) {});
 
 var productSearch = function() {
     inquirer.prompt([{
@@ -58,16 +60,16 @@ var productSearch = function() {
         }
     }]).then(function(answer) {
         var query = 'SELECT ProductName,DepartmentName,Price,StockQuantity FROM Products WHERE ?';
-        console.log(answer);
+        //DEBUGGING: console.log(answer);
         connection.query(query, { ProductName: answer.searchProduct }, function(err, res) {
             for (var i = 0; i < res.length; i++) {
-                console.log("PRODUCT:  " +res[i].ProductName + "\n" + "DEPARTMENT:  "+res[i].DepartmentName + "\n" + "PRICE:  "+ "$" + res[i].Price + "\n" + "QUANTITY IN STOCK/AVAILABLE:  "+res[i].StockQuantity + "\n");
+                console.log("PRODUCT:  " + res[i].ProductName + "\n" + "DEPARTMENT:  " + res[i].DepartmentName + "\n" + "PRICE:  " + "$" + res[i].Price + "\n" + "QUANTITY IN STOCK/AVAILABLE:  " + res[i].StockQuantity + "\n");
 
-                // debug
+                // DEBUGGING
                 //console.log (res[i].StockQuantity);
 
                 var userQuantity = answer.howMany;
-                console.log("You want " + userQuantity +" "+ answer.searchProduct);
+                console.log("You want " + userQuantity + " " + answer.searchProduct);
 
                 switch (true) {
                     case (userQuantity == res[i].StockQuantity):
@@ -85,19 +87,12 @@ var productSearch = function() {
                         res[i].StockQuantity -= userQuantity;
 
 
-                        //UPDATE `Bamazon`.`Products` SET `StockQuantity`=res[i].StockQuantity WHERE `ProductName`='res[i].ProductName';
-
-
-    connection.query('SELECT * FROM Products', function(err, res) {
-        for (var i = 0; i < res.length; i++) {
-            console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + "$" + res[i].Price + " | ");
-        }
-        console.log("============================");
-        productSearch();
-    })
-}
-                        console.log("Updated Stock Quantity:" + res[i].StockQuantity);
                 }
+                var update = 'UPDATE Bamazon.Products SET ? WHERE ?';
+                connection.query(update, [{StockQuantity : res[i].StockQuantity} , {ProductName : res[i].ProductName}], function(err, res) {
+                    if (err) throw err;
+                    console.log("updated MYSQL");
+                });
             }
         });
     });
