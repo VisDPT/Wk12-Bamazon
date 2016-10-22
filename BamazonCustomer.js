@@ -13,14 +13,14 @@ var logo =
     "      ˚ ˛ •˛• ˚｜ 田田｜門｜ ˚\n";
 var ty =
 
-"░░░░░╔══╦╗░░░░╔╗░░░░░░╔╗╔╗░░░░░░░░\n"+
-"░░░░░╚╗╔╣╚╦═╦═╣║╔╗░░░░║║║╠═╦╦╗░░░░\n"+
-"░░░░░░║║║║╠╝║║║╠╝║░░░░║╚╝║║║║║░░░░\n"+
-"░░░░░░║║║║║║║║║╔╗╣░░░░╚╗╔╣║║║║░░░░\n"+
-"░░░░░░╚╝╚╩╩═╩╩╩╝╚╝░░░░░╚╝╚═╩═╝░░░░    FOR YOUR PURCHASE! \n"; 
+    "░░░░░╔══╦╗░░░░╔╗░░░░░░╔╗╔╗░░░░░░░░\n" +
+    "░░░░░╚╗╔╣╚╦═╦═╣║╔╗░░░░║║║╠═╦╦╗░░░░\n" +
+    "░░░░░░║║║║╠╝║║║╠╝║░░░░║╚╝║║║║║░░░░\n" +
+    "░░░░░░║║║║║║║║║╔╗╣░░░░╚╗╔╣║║║║░░░░\n" +
+    "░░░░░░╚╝╚╩╩═╩╩╩╝╚╝░░░░░╚╝╚═╩═╝░░░░    FOR YOUR PURCHASE! \n";
 
 
-var sorry= 
+var sorry =
     "▄███▄░░▄███▄░░████▄░████▄░██▄░░▄██ \n" +
     "▀█▄▀▀░██▀░▀██░██░██░██░██░░▀████▀░ \n" +
     "▄▄▀█▄░██▄░▄██░████▀░████▀░░░░██░░░ \n" +
@@ -54,7 +54,6 @@ function displayItems() {
         productSearch();
     })
 }
-//connection.query("UPDATE products SET ? WHERE ?", [{quantity: 100}, {flavor: "Rocky Road"}], function(err, res) {});
 
 var productSearch = function() {
     inquirer.prompt([{
@@ -79,12 +78,12 @@ var productSearch = function() {
         connection.query(query, { ProductName: answer.searchProduct }, function(err, res) {
             for (var i = 0; i < res.length; i++) {
                 console.log(
-                            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"+
-                            "PRODUCT:  " + res[i].ProductName + "\n" + 
-                            "DEPARTMENT:  " + res[i].DepartmentName + "\n" + 
-                            "PRICE:  " + "$" + res[i].Price + "\n" + 
-                            "QUANTITY IN STOCK/AVAILABLE:  " + res[i].StockQuantity + "\n" +
-                            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n");
+                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
+                    "PRODUCT:  " + res[i].ProductName + "\n" +
+                    "DEPARTMENT:  " + res[i].DepartmentName + "\n" +
+                    "PRICE:  " + "$" + res[i].Price + "\n" +
+                    "QUANTITY IN STOCK/AVAILABLE:  " + res[i].StockQuantity + "\n" +
+                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n");
 
                 // DEBUGGING
                 //console.log (res[i].StockQuantity);
@@ -95,36 +94,31 @@ var productSearch = function() {
                 switch (true) {
                     case (userQuantity == res[i].StockQuantity):
                         res[i].StockQuantity -= userQuantity;
-                        console.log (
-                            "Updated Stock Quantity:" + res[i].StockQuantity + "\n"+
-                            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"+
-                            ty+ "\n");
-                        // console.log("==============================================\n"+
-                        //     "Updated Stock Quantity:" + res[i].StockQuantity+
-                        //     "==============================================\n");
+                        console.log(
+                            "Updated Stock Quantity:" + res[i].StockQuantity + "\n" +
+                            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
+                            ty + "\n");
+
                         break;
 
                     case (userQuantity > res[i].StockQuantity):
-                        console.log (sorry);
-                        console.log("You want " + userQuantity + " " + answer.searchProduct +"!" +"Insufficient quantity! (Order has not gone through)");
+                        console.log(sorry);
+                        console.log("You want " + userQuantity + " " + answer.searchProduct + "!" + "Insufficient quantity! (Order has not gone through)");
                         break;
 
                     default:
                         res[i].StockQuantity -= userQuantity;
-                        console.log (
-                            "TOTAL PRICE:  " + userQuantity * res[i].Price +"\n"+
-                            "Updated Stock Quantity:" + res[i].StockQuantity + "\n"+
-                            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"+
-                            ty+ "\n");
-                        
-                        // console.log("==============================================\n"+
-                        //     "Updated Stock Quantity:" + res[i].StockQuantity + "\n"+
-                        //     "==============================================\n");
+                        console.log(
+                            "TOTAL PRICE:  " + userQuantity * res[i].Price + "\n" +
+                            "Updated Stock Quantity:" + res[i].StockQuantity + "\n" +
+                            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
+                            ty + "\n");
+
 
 
                 }
                 var update = 'UPDATE Bamazon.Products SET ? WHERE ?';
-                connection.query(update, [{StockQuantity : res[i].StockQuantity} , {ProductName : res[i].ProductName}], function(err, res) {
+                connection.query(update, [{ StockQuantity: res[i].StockQuantity }, { ProductName: res[i].ProductName }], function(err, res) {
                     if (err) throw err;
                     //console.log("MYSQL StockQuantity updated");
                 });
