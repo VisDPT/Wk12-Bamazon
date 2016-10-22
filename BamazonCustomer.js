@@ -4,15 +4,13 @@ var mysql = require('mysql');
 var inquirer = require('inquirer');
 
 
-var logo = 
-        "      • ˚ •˛•˚ * 。 • ˚ ˚ ˛ ˚ ˛ •\n"+
-        "      • ˚B AMAZON ★* 。 • ˚ ˚ ˛ ˚ ˛ •\n"+
-        "      •。★Shop from Home!★ 。* • ˚。\n"+
-        "      ° 。 ° ˛˚˛ *_Π_____*。*˚\n"+
-        "      ˚ ˛ •˛•˚ */______/~＼。˚ ˚ ˛\n"+
-        "      ˚ ˛ •˛• ˚｜ 田田｜門｜ ˚\n";
-
-
+var logo =
+    "      • ˚ •˛•˚ * 。 • ˚ ˚ ˛ ˚ ˛ •\n" +
+    "      • ˚B AMAZON ★* 。 • ˚ ˚ ˛ ˚ ˛ •\n" +
+    "      •。★Shop from Home!★ 。* • ˚。\n" +
+    "      ° 。 ° ˛˚˛ *_Π_____*。*˚\n" +
+    "      ˚ ˛ •˛•˚ */______/~＼。˚ ˚ ˛\n" +
+    "      ˚ ˛ •˛• ˚｜ 田田｜門｜ ˚\n";
 
 
 var connection = mysql.createConnection({
@@ -23,26 +21,22 @@ var connection = mysql.createConnection({
     database: "Bamazon"
 })
 
-
 connection.connect(function(err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
     displayItems();
-    
-})
 
+})
 
 console.log(logo);
-
-function displayItems(){
-connection.query('SELECT * FROM Products', function(err, res){
-	for (var i =0; i<res.length; i++){
-        
-		console.log(res[i].ItemID + " | " + res [i].ProductName + " | " + "$" +res[i].Price + " | ");
-	}
-	console.log("============================");
-	productSearch();
-})
+function displayItems() {
+    connection.query('SELECT * FROM Products', function(err, res) {
+        for (var i = 0; i < res.length; i++) {
+            console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + "$" + res[i].Price + " | ");
+        }
+        console.log("============================");
+        productSearch();
+    })
 }
 
 var productSearch = function() {
@@ -50,12 +44,11 @@ var productSearch = function() {
         name: "searchProduct",
         type: "input",
         message: "What product are you looking for? ",
-     
-      },
-      {
-     name: "howMany",
-     type: "input",
-     message: "How many would you like to purchase?",
+
+    }, {
+        name: "howMany",
+        type: "input",
+        message: "How many would you like to purchase?",
         validate: function(value) {
             if (isNaN(value) == false) {
                 return true;
@@ -63,38 +56,36 @@ var productSearch = function() {
                 return false;
             }
         }
- }]).then(function(answer) {
+    }]).then(function(answer) {
         var query = 'SELECT ProductName,DepartmentName,Price,StockQuantity FROM Products WHERE ?';
-        connection.query(query, {ProductName: answer.searchProduct}, function(err, res) {
+        console.log(answer);
+        connection.query(query, { ProductName: answer.searchProduct }, function(err, res) {
             for (var i = 0; i < res.length; i++) {
-                console.log(res [i].ProductName + "  |  " + res[i].DepartmentName + "  |  " + "$" +res[i].Price + " | " + res[i].StockQuantity + "  |  " );
-                    
-                if (answer.StockQuantity < res[i].StockQuantity) {
-                    console.log("Great! We have that amount!");
-                } 
-                else{
-                    console.log("SORRY! Insufficient quantity! (Order has not gone through)");
-                }  
-                // switch(true){
-                //     case (answer.StockQuantity<res[i].StockQuantity): 
-                //         console.log("Great! We have that amount!");
-                //         break;
+                console.log("PRODUCT:  " +res[i].ProductName + "\n" + "DEPARTMENT:  "+res[i].DepartmentName + "\n" + "PRICE:  "+ "$" + res[i].Price + "\n" + "QUANTITY IN STOCK/AVAILABLE:  "+res[i].StockQuantity + "\n");
 
-                //     case (answer.StockQuantity>res[i].StockQuantity):
-                //         console.log("SORRY! WE ARE SOLD OUT!");
-                //         break;
+                // debug
+                //console.log (res[i].StockQuantity);
 
-                // }
-                
-//                 However, if your store does have enough of the product, you should fulfill the customer's order.
+                var userQuantity = answer.howMany;
+                console.log("You want " + userQuantity +" "+ answer.searchProduct);
 
-// This means updating the SQL database to reflect the remaining quantity.
-// Once the update goes through, show the customer the total cost of their purchase.
+                switch (true) {
+                    case (userQuantity == res[i].StockQuantity):
+                        console.log("Great! We have that quantity in stock!!");
+                        res[i].StockQuantity -= userQuantity;
+                        console.log("Updated Stock Quantity:" + res[i].StockQuantity);
+                        break;
+
+                    case (userQuantity > res[i].StockQuantity):
+                        console.log("SORRY! Insufficient quantity! (Order has not gone through)");
+                        break;
+
+                    default:
+                        console.log("Great! We have that amount!");
+                        res[i].StockQuantity -= userQuantity;
+                        console.log("Updated Stock Quantity:" + res[i].StockQuantity);
+                }
             }
-
-
         });
-        
     });
-    
 };
