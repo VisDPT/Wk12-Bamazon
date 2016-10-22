@@ -7,17 +7,32 @@ var inquirer = require('inquirer');
 var logo =
     "      • ˚ •˛•˚ * 。 • ˚ ˚ ˛ ˚ ˛ •\n" +
     "      • ˚B AMAZON ★* 。 • ˚ ˚ ˛ ˚ ˛ •\n" +
-    "      •。★Shop from Home!★ 。* • ˚。\n" +
+    "      •。★SHOP FROM HOME!★ 。* • ˚。\n" +
     "      ° 。 ° ˛˚˛ *_Π_____*。*˚\n" +
     "      ˚ ˛ •˛•˚ */______/~＼。˚ ˚ ˛\n" +
     "      ˚ ˛ •˛• ˚｜ 田田｜門｜ ˚\n";
+var ty =
+
+"░░░░░╔══╦╗░░░░╔╗░░░░░░╔╗╔╗░░░░░░░░\n"+
+"░░░░░╚╗╔╣╚╦═╦═╣║╔╗░░░░║║║╠═╦╦╗░░░░\n"+
+"░░░░░░║║║║╠╝║║║╠╝║░░░░║╚╝║║║║║░░░░\n"+
+"░░░░░░║║║║║║║║║╔╗╣░░░░╚╗╔╣║║║║░░░░\n"+
+"░░░░░░╚╝╚╩╩═╩╩╩╝╚╝░░░░░╚╝╚═╩═╝░░░░    FOR YOUR PURCHASE! \n"; 
+
+
+var sorry= 
+    "▄███▄░░▄███▄░░████▄░████▄░██▄░░▄██ \n" +
+    "▀█▄▀▀░██▀░▀██░██░██░██░██░░▀████▀░ \n" +
+    "▄▄▀█▄░██▄░▄██░████▀░████▀░░░░██░░░ \n" +
+    "▀███▀░░▀███▀░░██░██░██░██░░░░██░░░  \n";
+
 
 
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-    user: "****", //Your username
-    password: "****", //Your password
+    user: "***", //Your username
+    password: "***", //Your password
     database: "Bamazon"
 })
 
@@ -63,35 +78,46 @@ var productSearch = function() {
         //DEBUGGING: console.log(answer);
         connection.query(query, { ProductName: answer.searchProduct }, function(err, res) {
             for (var i = 0; i < res.length; i++) {
-                console.log("PRODUCT:  " + res[i].ProductName + "\n" + "DEPARTMENT:  " + res[i].DepartmentName + "\n" + "PRICE:  " + "$" + res[i].Price + "\n" + "QUANTITY IN STOCK/AVAILABLE:  " + res[i].StockQuantity + "\n");
+                console.log(
+                            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"+
+                            "PRODUCT:  " + res[i].ProductName + "\n" + 
+                            "DEPARTMENT:  " + res[i].DepartmentName + "\n" + 
+                            "PRICE:  " + "$" + res[i].Price + "\n" + 
+                            "QUANTITY IN STOCK/AVAILABLE:  " + res[i].StockQuantity + "\n" +
+                            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n");
 
                 // DEBUGGING
                 //console.log (res[i].StockQuantity);
 
                 var userQuantity = answer.howMany;
-                console.log("You want " + userQuantity + " " + answer.searchProduct);
+                //console.log("You want " + userQuantity + " " + answer.searchProduct);
 
                 switch (true) {
                     case (userQuantity == res[i].StockQuantity):
-                        console.log("Great! We have that quantity in stock!!");
+                        //console.log("Great! We have that quantity in stock!!");
+                        console.log (ty);
                         res[i].StockQuantity -= userQuantity;
                         console.log("Updated Stock Quantity:" + res[i].StockQuantity);
+                        
                         break;
 
                     case (userQuantity > res[i].StockQuantity):
-                        console.log("SORRY! Insufficient quantity! (Order has not gone through)");
+                        console.log (sorry);
+                        console.log("You want " + userQuantity + " " + answer.searchProduct +"!" +"Insufficient quantity! (Order has not gone through)");
                         break;
 
                     default:
-                        console.log("Great! We have that amount!");
+                        //console.log("Great! We have that amount!");
+                        console.log (ty);
                         res[i].StockQuantity -= userQuantity;
+                        console.log("Updated Stock Quantity:" + res[i].StockQuantity);
 
 
                 }
                 var update = 'UPDATE Bamazon.Products SET ? WHERE ?';
                 connection.query(update, [{StockQuantity : res[i].StockQuantity} , {ProductName : res[i].ProductName}], function(err, res) {
                     if (err) throw err;
-                    console.log("updated MYSQL");
+                    //console.log("updated MYSQL");
                 });
             }
         });
