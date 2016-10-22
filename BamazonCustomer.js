@@ -31,8 +31,8 @@ var sorry=
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-    user: "**", //Your username
-    password: "**", //Your password
+    user: "", //Your username
+    password: "", //Your password
     database: "Bamazon"
 })
 
@@ -94,17 +94,14 @@ var productSearch = function() {
 
                 switch (true) {
                     case (userQuantity == res[i].StockQuantity):
-                        //console.log("Great! We have that quantity in stock!!");
+                        res[i].StockQuantity -= userQuantity;
                         console.log (
                             "Updated Stock Quantity:" + res[i].StockQuantity + "\n"+
                             "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"+
                             ty+ "\n");
-                        res[i].StockQuantity -= userQuantity;
                         // console.log("==============================================\n"+
                         //     "Updated Stock Quantity:" + res[i].StockQuantity+
                         //     "==============================================\n");
-                      
-                        
                         break;
 
                     case (userQuantity > res[i].StockQuantity):
@@ -113,12 +110,13 @@ var productSearch = function() {
                         break;
 
                     default:
-                        //console.log("Great! We have that amount!");
+                        res[i].StockQuantity -= userQuantity;
                         console.log (
+                            "TOTAL PRICE:  " + userQuantity * res[i].Price +"\n"+
                             "Updated Stock Quantity:" + res[i].StockQuantity + "\n"+
                             "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n"+
                             ty+ "\n");
-                        res[i].StockQuantity -= userQuantity;
+                        
                         // console.log("==============================================\n"+
                         //     "Updated Stock Quantity:" + res[i].StockQuantity + "\n"+
                         //     "==============================================\n");
@@ -128,7 +126,7 @@ var productSearch = function() {
                 var update = 'UPDATE Bamazon.Products SET ? WHERE ?';
                 connection.query(update, [{StockQuantity : res[i].StockQuantity} , {ProductName : res[i].ProductName}], function(err, res) {
                     if (err) throw err;
-                    //console.log("MYSQL updated");
+                    //console.log("MYSQL StockQuantity updated");
                 });
                 productSearch();
             }
