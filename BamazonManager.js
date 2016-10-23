@@ -43,7 +43,7 @@ function managerDisplayItems() {
                 viewLowInventory();
                 break;
             case ("Add to Inventory"):
-                displayAllItems();
+        
                 addToInventory();
                 break;
             case ("Add New Product"):
@@ -88,6 +88,7 @@ function viewLowInventory() {
 }
 // Add to Inventory, your app should display a prompt that will let the manager "add more" of any item currently in the store.
 function addToInventory() {
+
     inquirer.prompt([{
         name: "product",
         type: "input",
@@ -105,20 +106,33 @@ function addToInventory() {
             }
         }
     }]).then(function(answer) {
+
         var query = 'SELECT ProductName,DepartmentName,Price,StockQuantity FROM Products WHERE ?';
         //DEBUGGING: console.log(answer);
         connection.query(query, { ProductName: answer.product }, function(err, res) {
             for (var i = 0; i < res.length; i++) {
-                var quantityAdding = answer.update;
-                res[i].StockQuantity += quantityAdding;
-                console.log(res[i].StockQuantity);
+                console.log(
+                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
+                    "PRODUCT:  " + res[i].ProductName + "\n" +
+                    "DEPARTMENT:  " + res[i].DepartmentName + "\n" +
+                    "PRICE:  " + "$" + res[i].Price + "\n" +
+                    "QUANTITY IN STOCK/AVAILABLE:  " + res[i].StockQuantity + "\n" +
+                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n");
+                var quantityAdding = parseInt(answer.update);
+                var StockQuantity = parseInt(res[i].StockQuantity);
+                StockQuantity += quantityAdding;
+                console.log( "YOU ADDDED:" + quantityAdding + "\n"+
+                    "UPDATED QUANTITY:  " + StockQuantity + "\n");
+
+                //console.log(res[i].StockQuantity);
                 //console.log("You want " + userQuantity + " " + answer.searchProduct);
+                var update = 'UPDATE Bamazon.Products SET ? WHERE ?';
+                connection.query(update, [{ StockQuantity: StockQuantity }, { ProductName: res[i].ProductName }], function(err, res) {
+                 if (err) throw err;
+                 console.log("MYSQL StockQuantity updated");
+                 });
             }
-            // var update = 'UPDATE Bamazon.Products SET ? WHERE ?';
-            // connection.query(update, [{ StockQuantity: res[i].StockQuantity }, { ProductName: res[i].ProductName }], function(err, res) {
-            //     if (err) throw err;
-            //     console.log("MYSQL StockQuantity updated");
-            // });
+
         });
     })
 }
