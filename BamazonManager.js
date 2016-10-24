@@ -5,8 +5,7 @@ var inquirer = require('inquirer');
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-    user: "", //Your username
-    password: "", //Your password
+
     database: "Bamazon"
 })
 
@@ -20,9 +19,10 @@ connection.connect(function(err) {
 function displayAllItems() {
     connection.query('SELECT * FROM Products', function(err, res) {
         for (var i = 0; i < res.length; i++) {
-            console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + "$" + res[i].Price + " | ");
+            console.log("");
+            console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + "$" + res[i].Price + " | " + res[i].StockQuantity + " | ");
         }
-        console.log("============================");
+        
     })
 }
 
@@ -43,10 +43,11 @@ function managerDisplayItems() {
                 viewLowInventory();
                 break;
             case ("Add to Inventory"):
-        
+                displayAllItems();        
                 addToInventory();
                 break;
             case ("Add New Product"):
+                addNewProduct();
                 break;
             default:
         }
@@ -88,7 +89,6 @@ function viewLowInventory() {
 }
 // Add to Inventory, your app should display a prompt that will let the manager "add more" of any item currently in the store.
 function addToInventory() {
-
     inquirer.prompt([{
         name: "product",
         type: "input",
@@ -140,12 +140,61 @@ function addToInventory() {
 
 
 // Add New Product, it should allow the manager to add a completely new product to the store.
-function addNewProduct() {
-    connection.query('SELECT * FROM Products', function(err, res) {
-        for (var i = 0; i < res.length; i++) {
-            console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + "$" + res[i].Price + " | ");
-        }
-        console.log("============================");
 
-    })
+
+
+function addNewProduct() {
+    inquirer.prompt([{
+        name: "product",
+        type: "input",
+        message: "What product do you want to add? ",
+
+    }, {
+        name: "dept",
+        type: "input",
+        message: "What department is it in? ",
+
+    }, 
+    {
+        name: "price",
+        type: "input",
+        message: "How much is it for 1 item? (Use decimal point & do not put dollar sign in front) ",
+                validate: function(value) {
+            if (isNaN(value) == false) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    }, 
+    {
+        name: "stock",
+        type: "input",
+        message: "How many are you adding?",
+        validate: function(value) {
+            if (isNaN(value) == false) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }]).then(function(answer) {
+var post  = {ProductName: answer.product, DepartmentName: answer.dept, Price: answer.price, StockQuantity: answer.stock};
+ // var query = "INSERT INTO Bamazon.Products ? VALUES ?";
+    connection.query("INSERT INTO Bamazon.Products SET ?",post,  function(err, res) {
+        if (err) throw err;
+            console.log(
+                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
+                    "NEW ITEM ADDED!\n" +
+                    "PRODUCT:  " + answer.product + "\n" +
+                    "DEPARTMENT:  " + answer.dept + "\n" +
+                    "PRICE:  " + "$" + answer.price + "\n" +
+                    "QUANTITY IN STOCK/AVAILABLE:  " + answer.stock + "\n" +
+                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
+                    "MYSQL StockQuantity updated");
+   
+    });
+   }) 
+
 }
