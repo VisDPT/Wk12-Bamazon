@@ -5,7 +5,8 @@ var inquirer = require('inquirer');
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-
+    user: "", //Your username
+    password: "", //Your password
     database: "Bamazon"
 })
 

@@ -120,7 +120,7 @@ var productSearch = function() {
                 var update = 'UPDATE Bamazon.Products SET ? WHERE ?';
                 connection.query(update, [{ StockQuantity: res[i].StockQuantity }, { ProductName: res[i].ProductName }], function(err, res) {
                     if (err) throw err;
-                    //console.log("MYSQL StockQuantity updated");
+                    console.log("MYSQL StockQuantity updated");
                 });
                 productSearch();
             }
