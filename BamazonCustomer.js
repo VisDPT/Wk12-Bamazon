@@ -31,8 +31,7 @@ var sorry =
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-    user: "", //Your username
-    password: "", //Your password
+
     database: "Bamazon"
 })
 
@@ -48,7 +47,7 @@ console.log(logo);
 function displayItems() {
     connection.query('SELECT * FROM Products', function(err, res) {
         for (var i = 0; i < res.length; i++) {
-            console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + "$" + res[i].Price + " | ");
+            console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + "$" + res[i].Price + " | "+ res[i].StockQuantity + " | ");
         }
         console.log("============================");
         productSearch();
