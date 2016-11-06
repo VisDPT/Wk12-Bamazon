@@ -31,7 +31,8 @@ var sorry =
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-
+    user: "root", //Your username
+    password: "uma1234", //Your password
     database: "Bamazon"
 })
 

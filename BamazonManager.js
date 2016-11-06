@@ -5,7 +5,8 @@ var inquirer = require('inquirer');
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
-
+    user: "root", //Your username
+    password: "uma1234", //Your password
     database: "Bamazon"
 })
 
@@ -22,7 +23,7 @@ function displayAllItems() {
             console.log("");
             console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + "$" + res[i].Price + " | " + res[i].StockQuantity + " | ");
         }
-        
+
     })
 }
 
@@ -43,7 +44,7 @@ function managerDisplayItems() {
                 viewLowInventory();
                 break;
             case ("Add to Inventory"):
-                displayAllItems();        
+                displayAllItems();
                 addToInventory();
                 break;
             case ("Add New Product"):
@@ -63,7 +64,7 @@ function viewProducts() {
     connection.query('SELECT * FROM Products', function(err, res) {
         for (var i = 0; i < res.length; i++) {
             console.log("===============================================================\n");
-            console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + res[i].DepartmentName + "$" + res[i].Price + " | " + res[i].StockQuantity + " | ");
+            console.log(res[i].ItemID + " | " + res[i].ProductName + " | " + res[i].DepartmentName + " | " + "$" + res[i].Price + " | " + res[i].StockQuantity + " | ");
         }
     })
 }
@@ -121,16 +122,16 @@ function addToInventory() {
                 var quantityAdding = parseInt(answer.update);
                 var StockQuantity = parseInt(res[i].StockQuantity);
                 StockQuantity += quantityAdding;
-                console.log( "YOU ADDDED:" + quantityAdding + "\n"+
+                console.log("YOU ADDDED:" + quantityAdding + "\n" +
                     "UPDATED QUANTITY:  " + StockQuantity + "\n");
 
                 //console.log(res[i].StockQuantity);
                 //console.log("You want " + userQuantity + " " + answer.searchProduct);
                 var update = 'UPDATE Bamazon.Products SET ? WHERE ?';
                 connection.query(update, [{ StockQuantity: StockQuantity }, { ProductName: res[i].ProductName }], function(err, res) {
-                 if (err) throw err;
-                 console.log("MYSQL StockQuantity updated");
-                 });
+                    if (err) throw err;
+                    console.log("MYSQL StockQuantity updated");
+                });
             }
 
         });
@@ -145,56 +146,57 @@ function addToInventory() {
 
 function addNewProduct() {
     inquirer.prompt([{
-        name: "product",
-        type: "input",
-        message: "What product do you want to add? ",
+            name: "product",
+            type: "input",
+            message: "What product do you want to add? ",
 
-    }, {
-        name: "dept",
-        type: "input",
-        message: "What department is it in? ",
+        }, {
+            name: "dept",
+            type: "input",
+            message: "What department is it in? ",
 
-    }, 
-    {
-        name: "price",
-        type: "input",
-        message: "How much is it for 1 item? (Use decimal point & do not put dollar sign in front) ",
-                validate: function(value) {
-            if (isNaN(value) == false) {
-                return true;
-            } else {
-                return false;
+        },
+        {
+            name: "price",
+            type: "input",
+            message: "How much is it for 1 item? (Use decimal point & do not put dollar sign in front) ",
+            validate: function(value) {
+                if (isNaN(value) == false) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+        },
+        {
+            name: "stock",
+            type: "input",
+            message: "How many are you adding?",
+            validate: function(value) {
+                if (isNaN(value) == false) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
         }
-
-    }, 
-    {
-        name: "stock",
-        type: "input",
-        message: "How many are you adding?",
-        validate: function(value) {
-            if (isNaN(value) == false) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }]).then(function(answer) {
-var post  = {ProductName: answer.product, DepartmentName: answer.dept, Price: answer.price, StockQuantity: answer.stock};
- // var query = "INSERT INTO Bamazon.Products ? VALUES ?";
-    connection.query("INSERT INTO Bamazon.Products SET ?",post,  function(err, res) {
-        if (err) throw err;
+    ]).then(function(answer) {
+        var post = { ProductName: answer.product, DepartmentName: answer.dept, Price: answer.price, StockQuantity: answer.stock };
+        // var query = "INSERT INTO Bamazon.Products ? VALUES ?";
+        connection.query("INSERT INTO Bamazon.Products SET ?", post, function(err, res) {
+            if (err) throw err;
             console.log(
-                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                    "NEW ITEM ADDED!\n" +
-                    "PRODUCT:  " + answer.product + "\n" +
-                    "DEPARTMENT:  " + answer.dept + "\n" +
-                    "PRICE:  " + "$" + answer.price + "\n" +
-                    "QUANTITY IN STOCK/AVAILABLE:  " + answer.stock + "\n" +
-                    "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
-                    "MYSQL StockQuantity updated");
-   
-    });
-   }) 
+                "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
+                "NEW ITEM ADDED!\n" +
+                "PRODUCT:  " + answer.product + "\n" +
+                "DEPARTMENT:  " + answer.dept + "\n" +
+                "PRICE:  " + "$" + answer.price + "\n" +
+                "QUANTITY IN STOCK/AVAILABLE:  " + answer.stock + "\n" +
+                "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬  ஜ ۩ ۞ ۩ ஜ  ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" +
+                "MYSQL StockQuantity updated");
+
+        });
+    })
 
 }
